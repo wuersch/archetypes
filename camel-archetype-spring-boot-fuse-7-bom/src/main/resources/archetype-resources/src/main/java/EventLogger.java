@@ -1,6 +1,5 @@
 package ${package};
 
-
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
@@ -17,8 +16,6 @@ import static net.logstash.logback.argument.StructuredArguments.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.stream.Stream;
-
 
 /**
  * A sample transform
@@ -42,14 +39,14 @@ public class EventLogger {
         Logger logger = LoggerFactory.getLogger("eventLogger." + exchange.getContext().getName() + "." + exchange.getFromRouteId() + "." + messageHistoryList.getLast().getRouteId());
         Date logDate = new Date();
         logger.info("Route has started",
-        kv("state","started"),
-        kv("startDate",startDate),
-        kv("elapsed", logDate.getTime() - startDate.getTime()),
-        safeBody(body),
-        kv("camel.breadcrumbId",breadcrumbId),
-        kv("camel.fromRouteId",exchange.getFromRouteId()),
-        kv("camel.routeId",messageHistoryList.getLast().getRouteId()),
-        kv("camel.contextId",exchange.getContext().getName())
+            kv("state","started"),
+            kv("startDate",startDate),
+            kv("elapsed", logDate.getTime() - startDate.getTime()),
+            safeBody(body),
+            kv("camel.breadcrumbId",breadcrumbId),
+            kv("camel.fromRouteId",exchange.getFromRouteId()),
+            kv("camel.routeId",messageHistoryList.getLast().getRouteId()),
+            kv("camel.contextId",exchange.getContext().getName())
         );
     }
 
@@ -64,7 +61,7 @@ public class EventLogger {
         Date logDate = new Date();
         
         if (exception==null){
-                logger.info(null,
+            logger.info(null,
                 kv("state","success"),
                 kv("startDate",startDate),
                 kv("elapsed", logDate.getTime() - startDate.getTime()),
@@ -73,11 +70,9 @@ public class EventLogger {
                 kv("camel.fromRouteId",exchange.getFromRouteId()),
                 kv("camel.routeId",messageHistoryList.getLast().getRouteId()),
                 kv("camel.contextId",exchange.getContext().getName())
-                );
-            }
-        else
-            {
-                logger.error(exception.getMessage(),
+            );
+        } else {
+            logger.error(exception.getMessage(),
                 kv("state","error"),
                 kv("startDate",startDate),
                 kv("elapsed", logDate.getTime() - startDate.getTime()),
@@ -85,10 +80,7 @@ public class EventLogger {
                 kv("camel.fromRouteId",exchange.getFromRouteId()),
                 kv("camel.routeId",messageHistoryList.getLast().getRouteId()),
                 kv("camel.contextId",exchange.getContext().getName())
-                );
-            }
-
-
+            );
+        }
     }
-    
 }

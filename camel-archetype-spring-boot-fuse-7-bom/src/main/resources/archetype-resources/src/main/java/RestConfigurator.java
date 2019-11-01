@@ -15,16 +15,16 @@ public class RestConfigurator extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		restConfiguration()
-		.component("servlet")
-		.bindingMode(RestBindingMode.json)
-		.contextPath(environment.getProperty("camelrest.contextPath"))
-		.port(environment.getProperty("camelrest.port"))
-		.apiContextPath("/api-docs")
-		.apiProperty("cors", "true")
-		.apiProperty("api.title", environment.getProperty("camel.springboot.name"))
-		.apiProperty("api.version", environment.getProperty("camelrest.apiversion"))
-		.host(environment.getProperty("camelrest.host"))
-		.dataFormatProperty("prettyPrint", "true");
+			.component("servlet")
+			.bindingMode(RestBindingMode.json)
+			.contextPath(environment.getProperty("camel.rest.contextPath"))
+			.port(environment.getProperty("camel.rest.port"))
+			.apiContextPath("/api-docs")
+			.apiProperty("cors", "true")
+			.apiProperty("api.title", environment.getProperty("camel.springboot.name"))
+			.apiProperty("api.version", environment.getProperty("camel.rest.apiversion"))
+			.host(environment.getProperty("camel.rest.host"))
+			.dataFormatProperty("prettyPrint", "true");
 	}
 
 

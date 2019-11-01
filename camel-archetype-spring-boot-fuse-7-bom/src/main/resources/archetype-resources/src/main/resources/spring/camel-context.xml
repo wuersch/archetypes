@@ -2,21 +2,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+#if (${cxfSupport} == 'true')       
        xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xmlns:p="http://cxf.apache.org/policy"
+       xmlns:wsp="http://www.w3.org/ns/ws-policy"
+#end
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+#if (${cxfSupport} == 'true')
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
+       http://www.w3.org/ns/ws-policy http://www.w3.org/2007/02/ws-policy.xsd
+#end
        ">
 
     <camelContext id="${artifactId}" xmlns="http://camel.apache.org/schema/spring">
-
 		<rest id="restsvc"  path="/restsvc">
 			<get id="get-ping" uri="/ping">
 				<route id="get-pring-route">
 					<setBody>
-						<method ref="myTransformer" />
+						<method ref="myTransformer" method="transform" />
 					</setBody>
 				</route>
 			</get>
@@ -35,12 +42,51 @@
         </route>
 
         <route id="${artifactId}-sample-route">
-            <from id="${artifactId}-sample-route-starter" uri="timer:start"/>
+            <from id="${artifactId}-sample-route-starter" uri="timer:start?period=15s" />
             <transform id="route-transform">
-                <method ref="myTransformer"/>
+                <method ref="myTransformer" method="transform" />
             </transform>
             <log id="log-body" message=">>> ${body}"/>
         </route>
+
+        <route id="rest-sample-route">
+            <from id="rest-sample-route-starter" uri="direct:getPerson" />
+            <log id="log-header" message=">>> ${header.email}" />
+
+            <removeHeaders id="remove-headers-for-response" pattern="*" />
+            
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+                <constant>501</constant>
+            </setHeader>
+            
+            <setBody>
+                <constant>{"error" : "not yet implemented, look at your camel-context.xml"}</constant>
+            </setBody>
+        </route>
     </camelContext>
 
+#if (${cxfSupport} == 'true')
+    <cxf:cxfEndpoint
+        id="PersonServiceEndpoint"
+        address="http://localhost:8080/PersonService"
+        serviceClass="org.example.basic_api.person.PersonPortType">
+        <cxf:properties>
+            <entry key="security.saml-callback-handler">
+                <ref bean="samlCallbackBean" />
+            </entry>
+
+            <entry key="security.signature.properties" value="security.properties" />
+        </cxf:properties>
+
+        <!-- Attach ws-policy to endpoint -->
+        <cxf:features>
+            <p:policies>
+                <wsp:PolicyReference URI="classpath:ws-policy.xml" />
+            </p:policies>
+        </cxf:features>
+    </cxf:cxfEndpoint>
+#end
 </beans>

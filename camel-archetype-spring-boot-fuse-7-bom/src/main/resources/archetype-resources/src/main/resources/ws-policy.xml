@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsp:Policy
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	wsu:Id="wss10_saml20_token_with_message_header_integrity_basic256_service_policy"
+	xsi:schemaLocation="http://schemas.xmlsoap.org/ws/2004/09/policy
+	                    http://schemas.xmlsoap.org/ws/2004/09/policy/ws-policy.xsd
+	                    http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd
+                        http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+	<sp:AsymmetricBinding
+		xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+		<wsp:Policy>
+			<sp:InitiatorToken>
+				<wsp:Policy>
+					<sp:X509Token
+						sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Always">
+						<wsp:Policy>
+							<sp:WssX509V3Token10 />
+						</wsp:Policy>
+					</sp:X509Token>
+				</wsp:Policy>
+			</sp:InitiatorToken>
+			<sp:RecipientToken>
+				<wsp:Policy>
+					<sp:X509Token
+						sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Always">
+						<wsp:Policy>
+							<sp:WssX509V3Token10 />
+						</wsp:Policy>
+					</sp:X509Token>
+				</wsp:Policy>
+			</sp:RecipientToken>
+			<sp:AlgorithmSuite>
+				<wsp:Policy>
+					<sp:Basic256 />
+				</wsp:Policy>
+			</sp:AlgorithmSuite>
+			<sp:Layout>
+				<wsp:Policy>
+					<sp:Lax />
+				</wsp:Policy>
+			</sp:Layout>
+			<sp:IncludeTimestamp />
+			<sp:OnlySignEntireHeadersAndBody />
+		</wsp:Policy>
+	</sp:AsymmetricBinding>
+	<sp:Wss10
+		xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+		<wsp:Policy>
+			<sp:MustSupportRefKeyIdentifier />
+			<sp:MustSupportRefIssuerSerial />
+		</wsp:Policy>
+	</sp:Wss10>
+	<sp:SignedSupportingTokens
+		xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+		<wsp:Policy>
+			<sp:SamlToken
+				sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+				<wsp:Policy>
+					<sp:WssSamlV20Token11 />
+				</wsp:Policy>
+			</sp:SamlToken>
+		</wsp:Policy>
+	</sp:SignedSupportingTokens>
+</wsp:Policy>
