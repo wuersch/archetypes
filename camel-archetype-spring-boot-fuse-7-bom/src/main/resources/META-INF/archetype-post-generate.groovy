@@ -23,6 +23,10 @@ String packageName = properties.get("package")
 String packagePath = packageName.replace(".", "/")
 
 if (cxfSupport != true) {
+  // Delete the WSDL and its parent folder
+  Files.deleteIfExists projectPath.resolve("src/main/resources/wsdl/contract.wsdl")
+  Files.deleteIfExists projectPath.resolve("src/main/resources/wsdl")
+
   // Delete the policy and security properties file
   Files.deleteIfExists projectPath.resolve("src/main/resources/ws-policy.xml")
   Files.deleteIfExists projectPath.resolve("src/main/resources/security.properties")
